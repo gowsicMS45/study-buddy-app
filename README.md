@@ -1,52 +1,98 @@
 # Study Buddy Backend
 
-Node.js + Express backend for the Study Buddy Android app.
-Takes OCR'd note text from the app and uses Gemini to generate flashcards & quizzes.
+Backend API for a Study Buddy Android application that converts OCR note text into flashcards, quizzes, and progress insights using Gemini AI.
 
-## Setup (local)
+## Overview
 
-```bash
-npm install
-cp .env.example .env
-# fill in MONGODB_URI and GEMINI_API_KEY in .env
-npm run dev
+Study Buddy is designed to help students turn raw notes into revision material. The backend stores notes, generates AI-powered learning content, and tracks quiz progress through a REST API built for Android app integration.
+
+## Tech Stack
+
+- Node.js
+- Express.js
+- MongoDB
+- Mongoose
+- Gemini API
+- dotenv
+- CORS
+
+## Features
+
+- Save OCR-generated notes
+- Generate flashcards from note content
+- Generate quizzes from notes
+- Track quiz progress
+- REST API structure for Android app integration
+- Environment-based configuration
+
+## Project Structure
+
+```text
+src/
+  config/      Database configuration
+  models/      Mongoose models
+  routes/      API routes
+  services/    AI and business logic services
+  server.js    Application entry point
 ```
-
-## Getting your keys
-
-1. **MongoDB Atlas** (free): https://www.mongodb.com/cloud/atlas/register
-   - Create a free M0 cluster → Database Access (create a user) → Network Access (allow 0.0.0.0/0 for now) → Connect → Drivers → copy connection string into `MONGODB_URI`.
-2. **Gemini API key** (free tier): https://aistudio.google.com/apikey
-   - Create a key, paste into `GEMINI_API_KEY`.
 
 ## API Endpoints
 
 | Method | Route | Purpose |
 |---|---|---|
-| POST | `/api/notes` | Save OCR'd note text (`{userId, title, rawText, subject}`) |
+| POST | `/api/notes` | Save OCR note text |
 | GET | `/api/notes/:userId` | Get all notes for a user |
 | DELETE | `/api/notes/:id` | Delete a note |
-| POST | `/api/flashcards/generate/:noteId` | Generate flashcards from a note via Gemini |
+| POST | `/api/flashcards/generate/:noteId` | Generate flashcards from a note |
 | GET | `/api/flashcards/note/:noteId` | Get flashcards for a note |
-| PATCH | `/api/flashcards/:id/review` | Update review stats (`{correct: true/false}`) |
-| POST | `/api/quiz/generate/:noteId` | Generate a quiz from a note via Gemini |
-| GET | `/api/quiz/:id` | Get a single quiz |
+| PATCH | `/api/flashcards/:id/review` | Update flashcard review stats |
+| POST | `/api/quiz/generate/:noteId` | Generate a quiz from a note |
+| GET | `/api/quiz/:id` | Get one quiz |
 | GET | `/api/quiz/user/:userId` | Get all quizzes for a user |
-| POST | `/api/progress` | Record a quiz attempt (`{userId, quizId, score, total}`) |
-| GET | `/api/progress/:userId` | Get progress history + avg score % |
+| POST | `/api/progress` | Record a quiz attempt |
+| GET | `/api/progress/:userId` | Get progress history and average score |
 
-## Deploy to Render (free)
+## Local Setup
 
-1. Push this folder to a GitHub repo.
-2. Go to https://render.com → New → Web Service → connect your repo.
-3. Settings:
-   - **Build Command:** `npm install`
-   - **Start Command:** `npm start`
-   - **Instance Type:** Free
-4. Add environment variables in Render dashboard (Environment tab):
-   - `MONGODB_URI`
-   - `GEMINI_API_KEY`
-   - `CORS_ORIGIN` = `*` (or your app's origin later)
-5. Deploy. Render gives you a live URL like `https://study-buddy-backend.onrender.com` — use this as `BASE_URL` in the Android app's Retrofit config.
+```bash
+npm install
+cp .env.example .env
+npm run dev
+```
 
-Note: free Render instances sleep after inactivity — first request after idle takes ~30s to wake up. Fine for a portfolio/demo project.
+Fill the required values in `.env` using your own credentials.
+
+## Environment Variables
+
+Use `.env.example` as a reference for required local configuration.
+
+Required values include:
+
+- `MONGODB_URI`
+- `GEMINI_API_KEY`
+- `CORS_ORIGIN`
+
+Do not commit real API keys, database credentials, JWT secrets, or production values.
+
+## Deployment
+
+This backend can be deployed to Render or a similar Node.js hosting provider.
+
+Recommended deployment settings:
+
+- Build command: `npm install`
+- Start command: `npm start`
+- Environment variables configured in the hosting dashboard
+
+Free hosting services may sleep after inactivity, so the first request after idle time can take longer.
+
+## Production Notes
+
+- Keep real API keys and database credentials out of Git.
+- Configure environment variables in the hosting provider dashboard.
+- Avoid using production database data for development testing.
+- Only connect to MongoDB when needed for actual functional verification.
+
+## Author
+
+Gowsic M S
